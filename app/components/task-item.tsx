@@ -18,16 +18,16 @@ export function TaskItem({ task, onTaskUpdated }: { task: Task; onTaskUpdated: (
   }[task.status]
 
   return (
-    <Card>
+    <Card className="max-w-60 mt-0 min-h-30">
       <CardHeader>
         <CardTitle className="flex justify-between items-center">
           {task.title}
           <Badge className={statusColor}>{task.status}</Badge>
         </CardTitle>
-        <CardDescription>期限: {format(new Date(task.dueDate), "PPP")}</CardDescription>
       </CardHeader>
       <CardContent>
         <p>{task.description}</p>
+        <CardDescription className="text-gray-500 mt-2">期限: {format(new Date(task.dueDate), "PPP")}</CardDescription>
       </CardContent>
     </Card>
   )

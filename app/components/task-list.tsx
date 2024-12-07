@@ -1,7 +1,7 @@
 'use client'
-
 import { useEffect, useState } from 'react'
 import { TaskItem } from './task-item'
+import { isAfter } from 'date-fns'
 
 interface Task {
   id: string
@@ -11,7 +11,11 @@ interface Task {
   status: string
 }
 
-export function TaskList() {
+interface TaskListProps {
+  view: 'all' | 'expired' | 'completed'
+}
+
+export function TaskList({ view }: TaskListProps) {
   const [tasks, setTasks] = useState<Task[]>([])
 
   const fetchTasks = async () => {
@@ -24,11 +28,21 @@ export function TaskList() {
     fetchTasks()
   }, [])
 
+  const filteredTasks = tasks.filter(task => {
+    if (view === 'all') return true
+    if (view === 'expired') return isAfter(new Date(), new Date(task.dueDate)) && task.status !== '完了'
+    if (view === 'completed') return task.status == '完了'
+    return false
+  })
+
   return (
-    <div className="space-y-4">
-      {tasks.map((task) => (
+    <div className=" flex gap-2">
+      {filteredTasks.map((task) => (
         <TaskItem key={task.id} task={task} onTaskUpdated={fetchTasks} />
       ))}
+      {filteredTasks.length === 0 && (
+        <p className="text-center text-gray-500">表示するタスクがありません。</p>
+      )}
     </div>
   )
 }
